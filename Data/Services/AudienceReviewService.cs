@@ -126,7 +126,7 @@ namespace Data.Services
                         else
                         {
                             response.Success = false;
-                            response.Message = "You are only to able add Movies of Admin's List of Movies";
+                            response.Message = "You are only able to add Movies of Admin's List of Movies";
                         }
                     }
                     else
