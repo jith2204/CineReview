@@ -20,5 +20,7 @@ namespace Data.Models
         public int TotalReviewers { get; set; }
 
         public float Rating { get; set; }
+
+        public DateTime LastReviewedTime { get; set; }
     }
 }
