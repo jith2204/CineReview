@@ -19,6 +19,7 @@ namespace Data.Mapper
             CreateMap<AudienceReview, AudienceReviewPaginationModel>().ReverseMap();
             CreateMap<SearchResult<AudienceRating>, SearchResult<AudienceRatingPaginationModel>>().ReverseMap();
             CreateMap<AudienceRating, AudienceRatingPaginationModel>().ReverseMap();
+            CreateMap<AudienceRating, IEnumerable<TrendingMoviesModel>>().ReverseMap();
         }
     }
 }

@@ -25,5 +25,11 @@ namespace FilmReview.Controllers
         {
             return await _audienceRatingService.GetAudienceRating(model);
         }
+
+        [HttpGet("TrendingMovies")]
+        public async Task<IEnumerable<TrendingMoviesModel>> GetTrendingMovies()
+        {
+            return await _audienceRatingService.GetTrendingMovies();
+        }
     }
 }

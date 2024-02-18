@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Data.Entities;
 using Data.Models;
+using Data.Repositories;
 using Data.Repositories.Interfaces;
 using Data.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,15 +18,15 @@ namespace Data.Services
     {
         readonly IAudienceRatingRepository _audienceRatingRepository;
         readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        readonly ApplicationContext _context;
         public AudienceRatingService
              (IAudienceRatingRepository audienceRatingRepository,
              IMapper mapper,
-             IHttpContextAccessor httpContextAccessor)
+             ApplicationContext context)
         {
             _audienceRatingRepository = audienceRatingRepository;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
+            _context = context;
         }
 
         public async Task<SearchResult<AudienceRatingPaginationModel>> GetAudienceRating(AudienceRatingSortFilterModel model)
@@ -122,6 +124,46 @@ namespace Data.Services
             var result = await _audienceRatingRepository.SearchAsync(filterQuery, orderQuery, model.PageNumber, model.PageSize);
             var searchResult = _mapper.Map<SearchResult<AudienceRatingPaginationModel>>(result);
             return searchResult;
+        }
+
+        public async Task<IEnumerable<TrendingMoviesModel>> GetTrendingMovies()
+        {
+            IList<TrendingMoviesModel> trendingMoviesModel = new List<TrendingMoviesModel>();
+
+            var audienceRatings = _context.AudienceRating
+                
+                .Where(s => s.LastReviewedTime.Date <= DateTime.Today && 
+                            s.LastReviewedTime.Date >= DateTime.Today.AddDays(-7)).ToList();
+
+            foreach (var audienceRating in audienceRatings)
+            {
+                var audienceReviews = _context.AudienceReview
+
+               .Where(s => s.UpdatedTime.Date <= DateTime.Today &&
+                           s.UpdatedTime.Date >= DateTime.Today.AddDays(-7) &&
+                           s.FilmName == audienceRating.FilmName &&
+                           s.Language == audienceRating.Language &&
+                           s.Year == audienceRating.Year);
+
+                if (audienceReviews.Any())
+                {
+                    var ratingsSum = audienceReviews.Sum(s => s.Rating);
+
+                    var ratingsAverage = ratingsSum / audienceReviews.Count();
+
+                    trendingMoviesModel.Add(new TrendingMoviesModel
+                    {
+                        FilmName = audienceRating.FilmName,
+                        Language = audienceRating.Language,
+                        Year = audienceRating.Year,
+                        Rating = ratingsAverage
+                    });
+                }
+            }
+
+            var result = trendingMoviesModel.OrderByDescending(trendingMoviesModel => trendingMoviesModel.Rating);
+
+            return _mapper.Map<IEnumerable<TrendingMoviesModel>>(result);
         }
     }
 }

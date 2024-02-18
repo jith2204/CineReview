@@ -11,5 +11,6 @@ namespace Data.Services.Interfaces
     {
         Task<SearchResult<AudienceRatingPaginationModel>> GetAudienceRating(AudienceRatingSortFilterModel model);
 
+        Task<IEnumerable<TrendingMoviesModel>> GetTrendingMovies();
     }
 }

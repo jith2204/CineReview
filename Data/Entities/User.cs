@@ -10,7 +10,5 @@ namespace Data.Entities
     public class User : IdentityUser
     {
         public string Name { get; set; }
-
-        public ICollection<AudienceReview> Audiences { get; set; }
     }
 }
