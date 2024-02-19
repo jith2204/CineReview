@@ -161,7 +161,7 @@ namespace Data.Services
                 }
             }
 
-            var result = trendingMoviesModel.OrderByDescending(trendingMoviesModel => trendingMoviesModel.Rating);
+            var result = trendingMoviesModel.OrderByDescending(trendingMoviesModel => trendingMoviesModel.Rating).Take(10);
 
             return _mapper.Map<IEnumerable<TrendingMoviesModel>>(result);
         }
