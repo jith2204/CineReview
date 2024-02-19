@@ -133,14 +133,14 @@ namespace Data.Services
             var audienceRatings = _context.AudienceRating
                 
                 .Where(s => s.LastReviewedTime.Date <= DateTime.Today && 
-                            s.LastReviewedTime.Date >= DateTime.Today.AddDays(-7)).ToList();
+                            s.LastReviewedTime.Date >= DateTime.Today.AddDays(-14)).ToList();
 
             foreach (var audienceRating in audienceRatings)
             {
                 var audienceReviews = _context.AudienceReview
 
                .Where(s => s.UpdatedTime.Date <= DateTime.Today &&
-                           s.UpdatedTime.Date >= DateTime.Today.AddDays(-7) &&
+                           s.UpdatedTime.Date >= DateTime.Today.AddDays(-14) &&
                            s.FilmName == audienceRating.FilmName &&
                            s.Language == audienceRating.Language &&
                            s.Year == audienceRating.Year);
@@ -154,7 +154,7 @@ namespace Data.Services
                     trendingMoviesModel.Add(new TrendingMoviesModel
                     {
                         FilmName = audienceRating.FilmName,
-                        Language = audienceRating.Language,
+                        Language = audienceRating.Language.ToString(),
                         Year = audienceRating.Year,
                         Rating = ratingsAverage
                     });

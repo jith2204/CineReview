@@ -358,7 +358,6 @@ namespace Data.Services
                                         var reviewers = filmRating.TotalReviewers;
 
                                         filmRating.Rating = ratings / reviewers;
-                                        filmRating.LastReviewedTime = DateTime.Now;
 
                                         _context.AudienceRating.Update(filmRating);
                                     }
@@ -379,7 +378,6 @@ namespace Data.Services
 
                                     _context.AudienceRating.Add(audienceRating);
 
-                                    
                                     filmRating.TotalRatings -= filmReview.Rating;
                                     var ratings = filmRating.TotalRatings;
 
@@ -387,7 +385,6 @@ namespace Data.Services
                                     var reviewers = filmRating.TotalReviewers;
 
                                     filmRating.Rating = ratings / reviewers;
-                                    filmRating.LastReviewedTime = DateTime.Now;
 
                                     _context.AudienceRating.Update(filmRating);
                                 }

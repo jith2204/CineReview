@@ -11,7 +11,7 @@ namespace Data.Models
     {
         public string FilmName { get; set; }
 
-        public Language Language { get; set; }
+        public string Language { get; set; }
 
         public int Year { get; set; }
 
