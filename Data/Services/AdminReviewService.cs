@@ -328,7 +328,7 @@ namespace Data.Repositories
                         filmReview.Genre = model.Genre;
                         filmReview.Rating = model.Rating;
 
-                        if (model.Review != null)
+                        if (!string.IsNullOrEmpty(model.Review))
                         {
                             filmReview.Review = model.Review;
                         }
