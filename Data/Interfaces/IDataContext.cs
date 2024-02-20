@@ -10,7 +10,6 @@ namespace Data.Interfaces
 {
     public interface IDataContext
     {
-        EntityEntry Entry(object entity);
         DbSet<T> Set<T>() where T : class;
     }
 }
