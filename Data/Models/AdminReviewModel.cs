@@ -27,7 +27,6 @@ namespace Data.Models
         [Required]
         public float Rating { get; set; }
 
-        [Required]
         public string Review { get; set; }
 
         [Required]

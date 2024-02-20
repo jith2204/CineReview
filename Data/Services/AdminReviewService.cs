@@ -327,7 +327,12 @@ namespace Data.Repositories
                         filmReview.Language = model.Language;
                         filmReview.Genre = model.Genre;
                         filmReview.Rating = model.Rating;
-                        filmReview.Review = model.Review;
+
+                        if (model.Review != null)
+                        {
+                            filmReview.Review = model.Review;
+                        }
+
                         filmReview.Liked = model.Liked;
                         filmReview.UpdatedTime = DateTime.Now;
 

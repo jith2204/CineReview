@@ -400,7 +400,12 @@ namespace Data.Services
                             filmReview.Year = model.Year;
                             filmReview.Language = model.Language;
                             filmReview.Rating = model.Rating;
-                            filmReview.Review = model.Review;
+
+                            if (model.Review != null)
+                            {
+                                filmReview.Review = model.Review;
+                            }
+
                             filmReview.Liked = model.Liked;
                             filmReview.UpdatedTime = DateTime.Now;
 
