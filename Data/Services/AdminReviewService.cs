@@ -308,11 +308,14 @@ namespace Data.Repositories
 
                 if (role.Contains("Admin"))
                 {
-                    var film = await _context.AdminReview.FirstOrDefaultAsync(s => s.FilmName.Equals(model.FilmName) && s.Language == model.Language && s.Release_Date.Year == model.Release_Date.Year);
-                    
-                    if (film != null)
+                    if (filmName != model.FilmName || language != model.Language || year != model.Release_Date.Year)
                     {
-                        throw new DuplicateException("Updating Review Already Exist");
+                        var film = await _context.AdminReview.FirstOrDefaultAsync(s => s.FilmName.Equals(model.FilmName) && s.Language == model.Language && s.Release_Date.Year == model.Release_Date.Year);
+
+                        if (film != null)
+                        {
+                            throw new DuplicateException("Updating Review Already Exist");
+                        }
                     }
                     
                     var filmReview = await _context.AdminReview.FirstOrDefaultAsync(s => s.FilmName.Equals(filmName) && s.Language == language && s.Release_Date.Year == year);
