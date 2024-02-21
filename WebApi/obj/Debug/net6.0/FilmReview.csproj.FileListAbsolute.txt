@@ -328,9 +328,9 @@ C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\staticwebassets.d
 C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\scopedcss\bundle\FilmReview.styles.css
 C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\scopedcss\projectbundle\FilmReview.bundle.scp.css
-C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\FilmReview.csproj.CopyComplete
 C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\FilmReview.dll
 C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\refint\FilmReview.dll
 C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\FilmReview.pdb
 C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\FilmReview.genruntimeconfig.cache
 C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\ref\FilmReview.dll
+C:\Users\jithj\source\repos\CineReview\WebApi\obj\Debug\net6.0\FilmReview.csproj.Up2Date

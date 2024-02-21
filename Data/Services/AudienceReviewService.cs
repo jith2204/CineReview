@@ -40,6 +40,17 @@ namespace Data.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
+
+        /// <summary>
+        /// Creates an Audience Review
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>The Successful Output Response</returns>
+        /// <exception cref="DuplicateException"></exception>
+        /// <exception cref="InternalServerException"></exception>
+        /// <exception cref="EntityNotFoundException"></exception>
+        /// <exception cref="ForbiddenException"></exception>
+        /// <exception cref="UnauthorizedException"></exception>
         public async Task<ResponseModel> CreateAudienceReview(AudienceReviewModel model)
         {
             ResponseModel response = new();
@@ -119,172 +130,198 @@ namespace Data.Services
                             else
                             {
                                 transaction.Rollback();
-                                response.Success = false;
-                                response.Message = "Some error occured while Creating the Review";
+                                throw new InternalServerException("Some error occured while Creating the Review");
                             }
                         }
                         else
                         {
-                            response.Success = false;
-                            response.Message = "You are only able to add Movies of Admin's List of Movies";
+                            throw new EntityNotFoundException("You are only able to add Movies of Admin's List of Movies");
                         }
                     }
                     else
                     {
-                        response.Success = false;
-                        response.Message = "Only Audience has the Authority to Create Audience Review";
+                        throw new ForbiddenException("Only Audience has the Authority to Create a Review");
                     }
                 }
                 else
                 {
-                    response.Success = false;
-                    response.Message = "No User Found";
+                    throw new UnauthorizedException("User Not Found");
                 }
             }
             return response;
         }
 
+
+        /// <summary>
+        /// Displays all Audience Reviews by Filtering and Sorting with Pagination
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>List of all Audience Reviews</returns>
+        /// <exception cref="UnauthorizedException"></exception>
         public async Task<SearchResult<AudienceReviewPaginationModel>> GetAudienceReview(AudienceReviewSortFilterModel model)
         {
-
             var filterQuery = PredicateBuilder.True<AudienceReview>();
+           
             Func<IQueryable<AudienceReview>, IOrderedQueryable<AudienceReview>> orderQuery = null;
 
-            if (!string.IsNullOrEmpty(model.FilmName))
-            {
-                filterQuery = filterQuery.And(s => s.FilmName.Contains(model.FilmName));
-            }
+            var loggedUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
 
-            if (model.Release_Year != null)
+            if (loggedUser != null)
             {
-                filterQuery = filterQuery.And(s => s.Year == model.Release_Year);
-            }
 
-            if (model.Language != null)
-            {
-                filterQuery = filterQuery.And(s => s.Language == model.Language);
-            }
-
-            if (model.Rating != null)
-            {
-                filterQuery = filterQuery.And(s => s.Rating == model.Rating);
-            }
-
-            if (model.RatingLessthan != null)
-            {
-                filterQuery = filterQuery.And(s => s.Rating < model.RatingLessthan);
-            }
-
-            if (model.RatingGreaterthan != null)
-            {
-                filterQuery = filterQuery.And(s => s.Rating > model.RatingGreaterthan);
-            }
-
-            if (model.Liked == true)
-            {
-                filterQuery = filterQuery.And(s => s.Liked == true);
-            }
-
-            else if (model.Liked == false)
-            {
-                filterQuery = filterQuery.And(s => s.Liked == false);
-            }
-
-            if (!string.IsNullOrEmpty(model.Email))
-            {
-                filterQuery = filterQuery.And(s => s.User.Email.Contains(model.Email));
-            }
-
-            if (!string.IsNullOrEmpty(model.Name))
-            {
-                filterQuery = filterQuery.And(s => s.User.Name.Contains(model.Name));
-            }
-
-            if (!string.IsNullOrEmpty(model.UserName))
-            {
-                filterQuery = filterQuery.And(s => s.User.UserName.Contains(model.UserName));
-            }
-
-            if (model.SortOrder == "ascending")
-            {
-                switch (model.SortingElement)
+                if (!string.IsNullOrEmpty(model.FilmName))
                 {
-                    case "film":
-                        orderQuery = q => q.OrderBy(s => s.FilmName);
-                        break;
-                    case "releaseyear":
-                        orderQuery = q => q.OrderBy(s => s.Year);
-                        break;
-                    case "language":
-                        orderQuery = q => q.OrderBy(s => s.Language);
-                        break;
-                    case "rating":
-                        orderQuery = q => q.OrderBy(s => s.Rating);
-                        break;
-                    case "liked":
-                        orderQuery = q => q.OrderBy(s => s.Liked);
-                        break;
-                    default:
-                        orderQuery = q => q.OrderBy(s => s.UpdatedTime);
-                        break;
+                    filterQuery = filterQuery.And(s => s.FilmName.Contains(model.FilmName));
+                }
+
+                if (model.Release_Year != null)
+                {
+                    filterQuery = filterQuery.And(s => s.Year == model.Release_Year);
+                }
+
+                if (model.Language != null)
+                {
+                    filterQuery = filterQuery.And(s => s.Language == model.Language);
+                }
+
+                if (model.Rating != null)
+                {
+                    filterQuery = filterQuery.And(s => s.Rating == model.Rating);
+                }
+
+                if (model.RatingLessthan != null)
+                {
+                    filterQuery = filterQuery.And(s => s.Rating < model.RatingLessthan);
+                }
+
+                if (model.RatingGreaterthan != null)
+                {
+                    filterQuery = filterQuery.And(s => s.Rating > model.RatingGreaterthan);
+                }
+
+                if (model.Liked == true)
+                {
+                    filterQuery = filterQuery.And(s => s.Liked == true);
+                }
+
+                else if (model.Liked == false)
+                {
+                    filterQuery = filterQuery.And(s => s.Liked == false);
+                }
+
+                if (!string.IsNullOrEmpty(model.Email))
+                {
+                    filterQuery = filterQuery.And(s => s.User.Email.Contains(model.Email));
+                }
+
+                if (!string.IsNullOrEmpty(model.Name))
+                {
+                    filterQuery = filterQuery.And(s => s.User.Name.Contains(model.Name));
+                }
+
+                if (!string.IsNullOrEmpty(model.UserName))
+                {
+                    filterQuery = filterQuery.And(s => s.User.UserName.Contains(model.UserName));
+                }
+
+                if (model.SortOrder == "ascending")
+                {
+                    switch (model.SortingElement)
+                    {
+                        case "film":
+                            orderQuery = q => q.OrderBy(s => s.FilmName);
+                            break;
+                        case "releaseyear":
+                            orderQuery = q => q.OrderBy(s => s.Year);
+                            break;
+                        case "language":
+                            orderQuery = q => q.OrderBy(s => s.Language);
+                            break;
+                        case "rating":
+                            orderQuery = q => q.OrderBy(s => s.Rating);
+                            break;
+                        case "liked":
+                            orderQuery = q => q.OrderBy(s => s.Liked);
+                            break;
+                        default:
+                            orderQuery = q => q.OrderBy(s => s.UpdatedTime);
+                            break;
+                    }
+                }
+
+                if (model.SortOrder == "descending")
+                {
+                    switch (model.SortingElement)
+                    {
+                        case "film":
+                            orderQuery = q => q.OrderByDescending(s => s.FilmName);
+                            break;
+                        case "year":
+                            orderQuery = q => q.OrderByDescending(s => s.Year);
+                            break;
+                        case "language":
+                            orderQuery = q => q.OrderByDescending(s => s.Language);
+                            break;
+                        case "rating":
+                            orderQuery = q => q.OrderByDescending(s => s.Rating);
+                            break;
+                        case "liked":
+                            orderQuery = q => q.OrderByDescending(s => s.Liked);
+                            break;
+                        default:
+                            orderQuery = q => q.OrderByDescending(s => s.UpdatedTime);
+                            break;
+                    }
+                }
+
+                else
+                {
+                    switch (model.SortingElement)
+                    {
+                        case "film":
+                            orderQuery = q => q.OrderBy(s => s.FilmName);
+                            break;
+                        case "year":
+                            orderQuery = q => q.OrderByDescending(s => s.Year);
+                            break;
+                        case "language":
+                            orderQuery = q => q.OrderBy(s => s.Language);
+                            break;
+                        case "rating":
+                            orderQuery = q => q.OrderByDescending(s => s.Rating);
+                            break;
+                        case "liked":
+                            orderQuery = q => q.OrderByDescending(s => s.Liked);
+                            break;
+                        default:
+                            orderQuery = q => q.OrderByDescending(s => s.UpdatedTime);
+                            break;
+                    }
                 }
             }
-
-            if (model.SortOrder == "descending")
-            {
-                switch (model.SortingElement)
-                {
-                    case "film":
-                        orderQuery = q => q.OrderByDescending(s => s.FilmName);
-                        break;
-                    case "year":
-                        orderQuery = q => q.OrderByDescending(s => s.Year);
-                        break;
-                    case "language":
-                        orderQuery = q => q.OrderByDescending(s => s.Language);
-                        break;
-                    case "rating":
-                        orderQuery = q => q.OrderByDescending(s => s.Rating);
-                        break;
-                    case "liked":
-                        orderQuery = q => q.OrderByDescending(s => s.Liked);
-                        break;
-                    default:
-                        orderQuery = q => q.OrderByDescending(s => s.UpdatedTime);
-                        break;
-                }
-            }
-
             else
             {
-                switch (model.SortingElement)
-                {
-                    case "film":
-                        orderQuery = q => q.OrderBy(s => s.FilmName);
-                        break;
-                    case "year":
-                        orderQuery = q => q.OrderByDescending(s => s.Year);
-                        break;
-                    case "language":
-                        orderQuery = q => q.OrderBy(s => s.Language);
-                        break;
-                    case "rating":
-                        orderQuery = q => q.OrderByDescending(s => s.Rating);
-                        break;
-                    case "liked":
-                        orderQuery = q => q.OrderByDescending(s => s.Liked);
-                        break;
-                    default:
-                        orderQuery = q => q.OrderByDescending(s => s.UpdatedTime);
-                        break;
-                }
+                throw new UnauthorizedException("No User Found");
             }
-
             var result = await _audienceReviewRepository.SearchAsync(filterQuery, orderQuery, model.PageNumber, model.PageSize, "User");
             var searchResult = _mapper.Map<SearchResult<AudienceReviewPaginationModel>>(result);
             return searchResult;
         }
 
+
+        /// <summary>
+        /// Updates an Audience Review
+        /// </summary>
+        /// <param name="filmName"></param>
+        /// <param name="language"></param>
+        /// <param name="year"></param>
+        /// <param name="model"></param>
+        /// <returns>The Successful Output Response</returns>
+        /// <exception cref="EntityNotFoundException"></exception>
+        /// <exception cref="DuplicateException"></exception>
+        /// <exception cref="InternalServerException"></exception>
+        /// <exception cref="ForbiddenException"></exception>
+        /// <exception cref="UnauthorizedException"></exception>
         public async Task<ResponseModel> UpdateAudienceReview(string filmName, Language language, int year, AudienceReviewModel model)
         {
             ResponseModel response = new();
@@ -302,7 +339,7 @@ namespace Data.Services
 
                         if (adminReview == null)
                         {
-                            throw new NoContentException("Updating Review should be in Admin's List of Movies");
+                            throw new EntityNotFoundException("Updating Review should be in Admin's List of Movies");
                         }
 
                         if (filmName != model.FilmName || language != model.Language || year != model.Year)
@@ -392,8 +429,7 @@ namespace Data.Services
 
                             else
                             {
-                                response.Success = false;
-                                response.Message = "Unable to Found Data in Audience Rating";
+                                throw new EntityNotFoundException("Unable to Found Data in Audience Rating");
                             }
                             
                             filmReview.FilmName = model.FilmName;
@@ -420,31 +456,39 @@ namespace Data.Services
                             else
                             {
                                 transaction.Rollback();
-                                response.Success = false;
-                                response.Message = "Some error occured while Updating the Review";
+                                throw new InternalServerException("Some error occured while Updating the Review");
                             }
                         }
                         else
                         {
-                            response.Success = false;
-                            response.Message = "Review Not Exist";
+                            throw new EntityNotFoundException("No Review Exist");
                         }
                     }
                     else
                     {
-                        response.Success = false;
-                        response.Message = "Only Audience has the authority to Update Audience Review";
+                        throw new ForbiddenException("Only Audience has the authority to Update a Review");
                     }
                 }
                 else
                 {
-                    response.Success = false;
-                    response.Message = "No User Found";
+                    throw new UnauthorizedException("No User Found");
                 }
             }
             return response;
         }
 
+
+        /// <summary>
+        /// Deletes an Audience Review
+        /// </summary>
+        /// <param name="filmName"></param>
+        /// <param name="language"></param>
+        /// <param name="year"></param>
+        /// <returns>The Successful Output Response</returns>
+        /// <exception cref="EntityNotFoundException"></exception>
+        /// <exception cref="InternalServerException"></exception>
+        /// <exception cref="ForbiddenException"></exception>
+        /// <exception cref="UnauthorizedException"></exception>
         public async Task<ResponseModel> DeleteAudienceReview(string filmName, Language language, int year)
         {
             ResponseModel response = new();
@@ -462,8 +506,7 @@ namespace Data.Services
                         
                         if (review == null)
                         {
-                            response.Success = false;
-                            response.Message = "Review Not Exist";
+                            throw new EntityNotFoundException("No Review Exist");
                         }
                         else
                         {
@@ -491,8 +534,7 @@ namespace Data.Services
                             }
                             else
                             {
-                                response.Success = false;
-                                response.Message = "Rating Not Exist";
+                                throw new EntityNotFoundException("No Rating Exist");
                             }
 
                             _context.AudienceReview.Remove(review);
@@ -507,21 +549,18 @@ namespace Data.Services
                             else
                             {
                                 transaction.Rollback();
-                                response.Success = false;
-                                response.Message = "Some error occured while Deleting the Review";
+                                throw new InternalServerException("Some error occured while Deleting the Review");
                             }
                         }
                     }
                     else
                     {
-                        response.Success = false;
-                        response.Message = "Only Audience has the Authority to Delete a Review";
+                        throw new ForbiddenException("Only Audience has the Authority to Delete a Review");
                     }
                 }
                 else
                 {
-                    response.Success = false;
-                    response.Message = "No User Found";
+                    throw new UnauthorizedException("No User Found");
                 }
             }
             return response;

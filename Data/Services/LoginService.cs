@@ -33,6 +33,13 @@ namespace Data.Services
             _configuration = configuration;
         }
 
+
+        /// <summary>
+        /// Login into an User Account
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>one user account is logged in</returns>
+        /// <exception cref="EntityNotFoundException"></exception>
         public async Task<TokenInfo> Login(LoginModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
@@ -64,6 +71,14 @@ namespace Data.Services
             }
         }
 
+
+        /// <summary>
+        /// Creates an User Account
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>one user account is registered</returns>
+        /// <exception cref="DuplicateException"></exception>
+        /// <exception cref="InternalServerException"></exception>
         public async Task<ResponseModel> Register(RegisterModel model)
         {
             ResponseModel response = new();
@@ -100,8 +115,7 @@ namespace Data.Services
 
             else
             {
-                response.Success = false;
-                response.Message = "Creation of User is Failed";
+                throw new InternalServerException("Creation of User is Failed");
             }
 
             if (model.Email == "jith@yopmail.com" && model.Password == "Jith@123")
