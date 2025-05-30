@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Hindi"
+  },
+  {
+    "id": 2,
+    "name": "Telugu"
+  },
+  {
+    "id": 3,
+    "name": "Tamil"
+  },
+  {
+    "id": 4,
+    "name": "Kannada"
+  },
+  {
+    "id": 5,
+    "name": "Malayalam"
+  }
+]

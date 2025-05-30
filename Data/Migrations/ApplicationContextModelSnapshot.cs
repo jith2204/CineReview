@@ -345,7 +345,7 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.AudienceReview", b =>
                 {
                     b.HasOne("Data.Entities.User", "User")
-                        .WithMany("Audiences")
+                        .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -402,11 +402,6 @@ namespace Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Data.Entities.User", b =>
-                {
-                    b.Navigation("Audiences");
                 });
 #pragma warning restore 612, 618
         }

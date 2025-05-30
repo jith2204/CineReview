@@ -92,7 +92,7 @@ namespace Data.Repositories
                     }
                     else
                     {
-                        throw new DuplicateException("Rating was already Created");
+                        throw new DuplicateException("Review was already Created");
                     }
                 }
                 else

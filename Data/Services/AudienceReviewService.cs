@@ -67,7 +67,7 @@ namespace Data.Services
 
                         if (filmReview != null)
                         {
-                            throw new DuplicateException("Audience Review Already Exist");
+                            throw new DuplicateException("Review Already Exist");
                         }
 
                         var review = await _context.AdminReview.FirstOrDefaultAsync(s => s.FilmName.Equals(model.FilmName) && s.Language == model.Language && s.Release_Date.Year == model.Year);
@@ -168,7 +168,6 @@ namespace Data.Services
 
             if (loggedUser != null)
             {
-
                 if (!string.IsNullOrEmpty(model.FilmName))
                 {
                     filterQuery = filterQuery.And(s => s.FilmName.Contains(model.FilmName));
@@ -429,7 +428,7 @@ namespace Data.Services
 
                             else
                             {
-                                throw new EntityNotFoundException("Unable to Found Data in Audience Rating");
+                                throw new EntityNotFoundException("Unable to Found Created Rating in Audience Rating");
                             }
                             
                             filmReview.FilmName = model.FilmName;

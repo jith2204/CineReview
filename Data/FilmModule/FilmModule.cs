@@ -21,6 +21,7 @@ namespace Data.FilmModule
             builder.RegisterType<AudienceReviewService>().As<IAudienceReviewService>();
             builder.RegisterType<AudienceRatingRepository>().As<IAudienceRatingRepository>();
             builder.RegisterType<AudienceRatingService>().As<IAudienceRatingService>();
+            builder.RegisterType<ListofValuesService>().As<IListofValuesService>();
             base.Load(builder);
         }
     }

@@ -37,7 +37,6 @@ namespace WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
 
             services.AddIdentity<User, IdentityRole>()

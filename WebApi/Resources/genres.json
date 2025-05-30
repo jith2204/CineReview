@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Thriller"
+  },
+  {
+    "id": 2,
+    "name": "Romance"
+  },
+  {
+    "id": 3,
+    "name": "Comedy"
+  },
+  {
+    "id": 4,
+    "name": "Action"
+  },
+  {
+    "id": 5,
+    "name": "Science Fiction"
+  },
+  {
+    "id": 6,
+    "name": "Feel Good"
+  },
+  {
+    "id": 7,
+    "name": "Survival"
+  },
+  {
+    "id": 8,
+    "name": "Emotional"
+  },
+  {
+    "id": 9,
+    "name": "Fantasy"
+  },
+  {
+    "id": 10,
+    "name": "Super Hero"
+  }
+]
